@@ -1,0 +1,53 @@
+import numba as nb
+import numpy as np
+
+
+@nb.jit(nopython=True)
+def fast_sort5(a, b, c, d, e):
+    "Sort 5 values with 7 Comparisons"
+    if a < b:
+        a, b = b, a
+    if c < d:
+        c, d = d, c
+    if a < c:
+        a, b, c, d = c, d, a, b
+    if e < c:
+        if e < d:
+            pass
+        else:
+            d, e = e, d
+    else:
+        if e < a:
+            c, d, e = e, c, d
+        else:
+            a, c, d, e = e, a, c, d
+    if b < d:
+        if b < e:
+            return b, e, d, c, a
+        else:
+            return e, b, d, c, a
+    else:
+        if b < c:
+            return e, d, b, c, a
+        else:
+            return e, d, c, b, a
+
+
+@nb.jit(nopython=True)
+def nb_accum_unordered(x):
+    n = x.shape[0]
+    g = np.zeros(x.shape)
+
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                for k in range(n):
+                    if i != k and j != k:
+                        for l in range(n):
+                            if i != l and j != l and k != l:
+                                for m in range(n):
+                                    if i != m and j != m and k != m and l != m:
+                                        ix, jx, kx, lx, mx = fast_sort5(i, j, k, l, m)
+                                        g[ix, jx, kx, lx, mx] += x[i, j, k, l, m]
+
+    return g
