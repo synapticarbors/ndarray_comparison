@@ -14,3 +14,7 @@ Then to compile the extensions:
 ```bash
 $ python setup.py build_ext --inplace
 ```
+
+The benchmark can be found in the following ipython notebook:
+https://github.com/synapticarbors/ndarray_comparison/blob/main/comparison.ipynb
+
