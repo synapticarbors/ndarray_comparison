@@ -65,14 +65,17 @@ cpdef np.float64_t[:, :, :, :, ::1] cy_accum_unordered(np.float64_t[:, :, :, :, 
 
     for i in range(n):
         for j in range(n):
-            if i != j:
-                for k in range(n):
-                    if i != k and j != k:
-                        for l in range(n):
-                            if i != l and j != l and k != l:
-                                for m in range(n):
-                                    if i != m and j != m and k != m and l != m:
-                                        fast_sort5(i, j, k, l, m, &ix, &jx, &kx, &lx, &mx)
-                                        g[ix, jx, kx, lx, mx] += x[i, j, k, l, m]
+            if i == j:
+                continue
+            for k in range(n):
+                if i == k or j == k:
+                    continue
+                for l in range(n):
+                    if i == l or j == l or k == l:
+                        continue
+                    for m in range(n):
+                        if i != m and j != m and k != m and l != m:
+                            fast_sort5(i, j, k, l, m, &ix, &jx, &kx, &lx, &mx)
+                            g[ix, jx, kx, lx, mx] += x[i, j, k, l, m]
 
     return gout

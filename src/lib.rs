@@ -75,23 +75,25 @@ fn fast_sort5(
 }
 
 fn _accum_unordered1(x: ArrayView5<f64>) -> Array5<f64> {
-    let n = x.len_of(Axis(0));
     let mut g = Array::zeros(x.raw_dim());
 
-    for i in 0..n {
-        for j in 0..n {
-            if i != j {
-                for k in 0..n {
-                    if i != k && j != k {
-                        for l in 0..n {
-                            if i != l && j != l && k != l {
-                                for m in 0..n {
-                                    if i != m && j != m && k != m && l != m {
-                                        let (ix, jx, kx, lx, mx) = fast_sort5(i, j, k, l, m);
-                                        g[[ix, jx, kx, lx, mx]] += x[[i, j, k, l, m]];
-                                    }
-                                }
-                            }
+    for i in 0..x.len_of(Axis(0)) {
+        for j in 0..x.len_of(Axis(1)) {
+            if i == j {
+                continue;
+            }
+            for k in 0..x.len_of(Axis(2)) {
+                if i == k || j == k {
+                    continue;
+                }
+                for l in 0..x.len_of(Axis(3)) {
+                    if i == l || j == l || k == l {
+                        continue;
+                    }
+                    for m in 0..x.len_of(Axis(4)) {
+                        if i != m && j != m && k != m && l != m {
+                            let (ix, jx, kx, lx, mx) = fast_sort5(i, j, k, l, m);
+                            g[[ix, jx, kx, lx, mx]] += x[[i, j, k, l, m]];
                         }
                     }
                 }
@@ -103,25 +105,27 @@ fn _accum_unordered1(x: ArrayView5<f64>) -> Array5<f64> {
 }
 
 fn _accum_unordered2(x: ArrayView5<f64>) -> Array5<f64> {
-    let n = x.len_of(Axis(0));
     let mut g = Array::zeros(x.raw_dim());
     let mut sx: [usize; 5];
 
-    for i in 0..n {
-        for j in 0..n {
-            if i != j {
-                for k in 0..n {
-                    if i != k && j != k {
-                        for l in 0..n {
-                            if i != l && j != l && k != l {
-                                for m in 0..n {
-                                    if i != m && j != m && k != m && l != m {
-                                        sx = [i, j, k, l, m];
-                                        sx.sort_unstable();
-                                        g[sx] += x[[i, j, k, l, m]];
-                                    }
-                                }
-                            }
+    for i in 0..x.len_of(Axis(0)) {
+        for j in 0..x.len_of(Axis(1)) {
+            if i == j {
+                continue;
+            }
+            for k in 0..x.len_of(Axis(2)) {
+                if i == k || j == k {
+                    continue;
+                }
+                for l in 0..x.len_of(Axis(3)) {
+                    if i == l || j == l || k == l {
+                        continue;
+                    }
+                    for m in 0..x.len_of(Axis(4)) {
+                        if i != m && j != m && k != m && l != m {
+                            sx = [i, j, k, l, m];
+                            sx.sort_unstable();
+                            g[sx] += x[[i, j, k, l, m]];
                         }
                     }
                 }
@@ -168,26 +172,27 @@ fn _accum_unordered4(x: ArrayView5<f64>) -> Array5<f64> {
 }
 
 fn _accum_unordered5(x: ArrayView5<f64>) -> Array5<f64> {
-    let n = x.len_of(Axis(0));
     let mut g = Array::zeros(x.raw_dim());
 
-    for i in 0..n {
-        for j in 0..n {
-            if i != j {
-                for k in 0..n {
-                    if i != k && j != k {
-                        for l in 0..n {
-                            if i != l && j != l && k != l {
-                                for m in 0..n {
-                                    if i != m && j != m && k != m && l != m {
-                                        let (ix, jx, kx, lx, mx) = fast_sort5(i, j, k, l, m);
-                                        unsafe {
-                                            *g.uget_mut([ix, jx, kx, lx, mx]) +=
-                                                x.uget([i, j, k, l, m]);
-                                        };
-                                    }
-                                }
-                            }
+    for i in 0..x.len_of(Axis(0)) {
+        for j in 0..x.len_of(Axis(1)) {
+            if i == j {
+                continue;
+            }
+            for k in 0..x.len_of(Axis(2)) {
+                if i == k || j == k {
+                    continue;
+                }
+                for l in 0..x.len_of(Axis(3)) {
+                    if i == l || j == l || k == l {
+                        continue;
+                    }
+                    for m in 0..x.len_of(Axis(4)) {
+                        if i != m && j != m && k != m && l != m {
+                            let (ix, jx, kx, lx, mx) = fast_sort5(i, j, k, l, m);
+                            unsafe {
+                                *g.uget_mut([ix, jx, kx, lx, mx]) += x.uget([i, j, k, l, m]);
+                            };
                         }
                     }
                 }
